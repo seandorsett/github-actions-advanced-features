@@ -721,7 +721,12 @@ runs:
         
         function handleKeyPress(event) {
             // Don't interfere with form elements or buttons (for accessibility)
-            if (event.target.tagName === 'BUTTON' || event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
+            const activeElement = event.target;
+            if (activeElement.tagName === 'BUTTON' || 
+                activeElement.tagName === 'INPUT' || 
+                activeElement.tagName === 'TEXTAREA' || 
+                activeElement.tagName === 'SELECT' ||
+                activeElement.isContentEditable) {
                 return;
             }
             
@@ -762,8 +767,12 @@ runs:
             
             notesWindow = window.open('', 'Speaker Notes', 'width=800,height=600,scrollbars=yes,resizable=yes');
             
-            if (notesWindow) {
-                notesWindow.document.write(`
+            if (!notesWindow) {
+                alert('Unable to open speaker notes window. Please allow popups for this site.');
+                return;
+            }
+            
+            notesWindow.document.write(`
                     <!DOCTYPE html>
                     <html lang="en">
                     <head>
@@ -828,14 +837,19 @@ runs:
                     </body>
                     </html>
                 `);
-                notesWindow.document.close();
-                updateNotesWindow();
-            }
+            notesWindow.document.close();
+            updateNotesWindow();
         }
         
         function updateNotesWindow() {
             if (notesWindow && !notesWindow.closed) {
                 const currentSlideElement = slides[currentSlide];
+                
+                // Guard against invalid slide index
+                if (!currentSlideElement) {
+                    return;
+                }
+                
                 const notesElement = currentSlideElement.querySelector('.notes');
                 const slideTitle = currentSlideElement.querySelector('h1, h2');
                 
