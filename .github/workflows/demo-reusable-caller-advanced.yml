@@ -8,7 +8,8 @@ on:
     paths:
       - 'demos/reusable-workflows/**'
 
-permissions: {}
+permissions:
+  contents: read
 
 jobs:
   call-for-staging:
