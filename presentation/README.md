@@ -21,22 +21,42 @@ The presentation is a self-contained HTML file located at `presentation/index.ht
 ### Presentation Features
 
 - **Self-contained**: No external dependencies, works offline
-- **Speaker Notes**: Each slide has presenter notes in yellow boxes
+- **Single-slide view**: Only one slide visible at a time for focused presentation
+- **Navigation controls**: Previous/Next buttons to advance through slides
+- **Keyboard navigation**: Use arrow keys, spacebar, or Page Up/Down to navigate
+- **Speaker Notes window**: Open notes in a separate browser window that syncs with the current slide
+- **Slide counter**: Always know which slide you're on (e.g., "Slide 5 of 20")
 - **Print-friendly**: Can be printed to PDF for handouts
 - **Responsive**: Works on various screen sizes
 
 ### Navigation
 
-- **Scroll down** to move through slides
-- **Print to PDF** (Ctrl/Cmd + P) for a handout version
-- Each slide is a separate section that prints on its own page
+**Button Controls:**
+- **Next → button**: Advance to the next slide
+- **← Previous button**: Go back to the previous slide
+- **📝 Speaker Notes button**: Open speaker notes in a separate window
+
+**Keyboard Shortcuts:**
+- **Arrow Right / Arrow Down / Space / Page Down**: Next slide
+- **Arrow Left / Arrow Up / Page Up**: Previous slide
+- **Home**: Jump to first slide
+- **End**: Jump to last slide
+
+**Speaker Notes:**
+- Click the "📝 Speaker Notes" button to open notes in a new window
+- The notes window automatically updates as you navigate through slides
+- Shows the current slide title and all presenter notes
+- The notes window stays in sync with the main presentation window
 
 ### Presenter Tips
 
 1. **Open in full screen** (F11) for presentation mode
-2. **Keep the Actions tab open** in another window for demos
-3. **Follow the timing** in speaker notes (10 min per topic)
-4. **Be ready to run workflows** manually if needed
+2. **Open the Speaker Notes window** by clicking the "📝 Speaker Notes" button
+3. **Position windows**: Place the main presentation on the projector/main screen and the speaker notes on your laptop screen
+4. **Use keyboard navigation** for smooth transitions (arrow keys or spacebar)
+5. **Keep the Actions tab open** in another browser tab for demos
+6. **Follow the timing** in speaker notes (10 min per topic)
+7. **Be ready to run workflows** manually if needed
 
 ### Customization
 

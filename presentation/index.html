@@ -30,9 +30,13 @@
             margin: 20px 0;
             box-shadow: 0 10px 40px rgba(0,0,0,0.1);
             min-height: 600px;
-            display: flex;
+            display: none;
             flex-direction: column;
             justify-content: center;
+        }
+        
+        .slide.active {
+            display: flex;
         }
         
         .slide h1 {
@@ -169,14 +173,98 @@
             font-size: 0.9em;
         }
         
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+        
+        .nav-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(118, 75, 162, 0.5);
+        }
+        
+        .nav-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            opacity: 0.5;
+            transform: none;
+        }
+        
+        .slide-counter {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: rgba(102, 126, 234, 0.9);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: bold;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .notes-button {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: #ffc107;
+            color: #333;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .notes-button:hover {
+            background: #ffa000;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 160, 0, 0.5);
+        }
+        
         @media print {
             .slide {
                 page-break-after: always;
+                display: flex !important;
+            }
+            .navigation, .slide-counter, .notes-button {
+                display: none;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Navigation Controls -->
+    <button class="notes-button" onclick="openNotesWindow()">📝 Speaker Notes</button>
+    <div class="slide-counter" id="slideCounter">Slide 1 of 18</div>
+    <div class="navigation">
+        <button class="nav-button" id="prevButton" onclick="previousSlide()">← Previous</button>
+        <button class="nav-button" id="nextButton" onclick="nextSlide()">Next →</button>
+    </div>
+    
     <div class="slides">
         <!-- Title Slide -->
         <div class="slide title-slide">
@@ -573,5 +661,195 @@ runs:
     <div class="footer">
         <p>GitHub Actions Advanced Features • 2026 • All demos available in repository</p>
     </div>
+    
+    <script>
+        let currentSlide = 0;
+        let slides = [];
+        let notesWindow = null;
+        
+        // Initialize slides on page load
+        function initSlides() {
+            slides = document.querySelectorAll('.slide');
+            showSlide(0);
+            updateNavigation();
+            
+            // Add keyboard navigation
+            document.addEventListener('keydown', handleKeyPress);
+        }
+        
+        function showSlide(index) {
+            // Hide all slides
+            slides.forEach(slide => slide.classList.remove('active'));
+            
+            // Show current slide
+            if (index >= 0 && index < slides.length) {
+                currentSlide = index;
+                slides[currentSlide].classList.add('active');
+                updateSlideCounter();
+                updateNavigation();
+                updateNotesWindow();
+                
+                // Scroll to top of page
+                window.scrollTo(0, 0);
+            }
+        }
+        
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                showSlide(currentSlide + 1);
+            }
+        }
+        
+        function previousSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+            }
+        }
+        
+        function updateSlideCounter() {
+            const counter = document.getElementById('slideCounter');
+            counter.textContent = `Slide ${currentSlide + 1} of ${slides.length}`;
+        }
+        
+        function updateNavigation() {
+            const prevButton = document.getElementById('prevButton');
+            const nextButton = document.getElementById('nextButton');
+            
+            prevButton.disabled = currentSlide === 0;
+            nextButton.disabled = currentSlide === slides.length - 1;
+        }
+        
+        function handleKeyPress(event) {
+            switch(event.key) {
+                case 'ArrowRight':
+                case 'ArrowDown':
+                case ' ':
+                case 'PageDown':
+                    event.preventDefault();
+                    nextSlide();
+                    break;
+                case 'ArrowLeft':
+                case 'ArrowUp':
+                case 'PageUp':
+                    event.preventDefault();
+                    previousSlide();
+                    break;
+                case 'Home':
+                    event.preventDefault();
+                    showSlide(0);
+                    break;
+                case 'End':
+                    event.preventDefault();
+                    showSlide(slides.length - 1);
+                    break;
+            }
+        }
+        
+        function openNotesWindow() {
+            if (notesWindow && !notesWindow.closed) {
+                notesWindow.focus();
+                return;
+            }
+            
+            notesWindow = window.open('', 'Speaker Notes', 'width=800,height=600,scrollbars=yes,resizable=yes');
+            
+            if (notesWindow) {
+                notesWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html lang="en">
+                    <head>
+                        <meta charset="UTF-8">
+                        <title>Speaker Notes</title>
+                        <style>
+                            body {
+                                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+                                margin: 0;
+                                padding: 20px;
+                                background: #f5f5f5;
+                            }
+                            .notes-container {
+                                max-width: 800px;
+                                margin: 0 auto;
+                                background: white;
+                                padding: 30px;
+                                border-radius: 10px;
+                                box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+                            }
+                            .slide-title {
+                                color: #667eea;
+                                font-size: 1.8em;
+                                margin-bottom: 15px;
+                                padding-bottom: 10px;
+                                border-bottom: 3px solid #667eea;
+                            }
+                            .notes-content {
+                                color: #333;
+                                line-height: 1.8;
+                                font-size: 1.1em;
+                            }
+                            .notes-content h4 {
+                                color: #764ba2;
+                                margin-top: 20px;
+                                margin-bottom: 10px;
+                            }
+                            .notes-content p {
+                                margin-bottom: 15px;
+                            }
+                            .no-notes {
+                                color: #999;
+                                font-style: italic;
+                            }
+                            .slide-counter {
+                                background: #667eea;
+                                color: white;
+                                padding: 10px 20px;
+                                border-radius: 5px;
+                                display: inline-block;
+                                margin-bottom: 20px;
+                                font-weight: bold;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="notes-container" id="notesContent">
+                            <div class="slide-counter">Loading...</div>
+                            <div class="slide-title">Speaker Notes</div>
+                            <div class="notes-content">Opening speaker notes...</div>
+                        </div>
+                    </body>
+                    </html>
+                `);
+                notesWindow.document.close();
+                updateNotesWindow();
+            }
+        }
+        
+        function updateNotesWindow() {
+            if (notesWindow && !notesWindow.closed) {
+                const currentSlideElement = slides[currentSlide];
+                const notesElement = currentSlideElement.querySelector('.notes');
+                const slideTitle = currentSlideElement.querySelector('h1, h2');
+                
+                let notesHTML = '<p class="no-notes">No speaker notes for this slide.</p>';
+                if (notesElement) {
+                    notesHTML = notesElement.innerHTML;
+                }
+                
+                const titleText = slideTitle ? slideTitle.textContent : 'Slide ' + (currentSlide + 1);
+                
+                const notesContent = notesWindow.document.getElementById('notesContent');
+                if (notesContent) {
+                    notesContent.innerHTML = `
+                        <div class="slide-counter">Slide ${currentSlide + 1} of ${slides.length}</div>
+                        <div class="slide-title">${titleText}</div>
+                        <div class="notes-content">${notesHTML}</div>
+                    `;
+                }
+            }
+        }
+        
+        // Initialize when page loads
+        window.addEventListener('load', initSlides);
+    </script>
 </body>
 </html>
