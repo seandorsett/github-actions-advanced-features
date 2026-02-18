@@ -478,7 +478,7 @@ runs:
             <ul>
                 <li><strong>Reusable Workflow</strong>: Inputs + secrets defined on <code>workflow_call</code>; callers pass them via <code>with:</code> and <code>secrets:</code></li>
                 <li><strong>Composite Action</strong>: Inputs/outputs in <code>action.yml</code>; secrets must be passed explicitly from caller</li>
-                <li><strong>Limitation</strong>: Environment secrets cannot be passed from the caller workflow via <code>workflow_call</code></li>
+                <li><strong>Limitation</strong>: Environment secrets must be configured in the reusable workflow's environment; they cannot be passed from the caller via <code>workflow_call</code></li>
             </ul>
             <h3>4. Orchestration & features</h3>
             <ul>
@@ -496,7 +496,7 @@ runs:
             <h3>Use a Composite Action when...</h3>
             <ul>
                 <li>You need <strong>reusable step sequences</strong> (setup toolchain, cache, install, standard logging wrapper)</li>
-                <li>The logic fits naturally inside one job and should run within the caller's job context</li>
+                <li>The logic fits naturally inside one job and should share the caller job's environment and runner</li>
             </ul>
             <h3>Use a Reusable Workflow when...</h3>
             <ul>
