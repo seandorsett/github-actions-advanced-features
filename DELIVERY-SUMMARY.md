@@ -55,7 +55,7 @@ All demos are:
 ├── PRESENTER-GUIDE.md          # Quick reference for presenters
 ├── TESTING.md                  # Pre-presentation testing guide
 ├── presentation/
-│   ├── index.html              # Main presentation (577 lines)
+│   ├── index.html              # Main presentation
 │   └── README.md               # Viewing instructions
 ├── .github/
 │   ├── workflows/              # 12 workflow files
@@ -173,9 +173,6 @@ Total: 55 minutes
 ### 📊 Statistics
 
 - **Total files created**: 29
-- **Lines of YAML**: ~500
-- **Lines of Markdown**: ~600
-- **Lines of HTML**: 577
 - **Workflow files**: 12
 - **Composite actions**: 2
 - **Documentation files**: 15
