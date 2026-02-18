@@ -149,7 +149,5 @@ jobs:
         run: |
           echo "🚀 Deploying to production..."
           echo "Build info:"
-          cat logs/build-info.txt
-          echo ""
           echo "Deploying the same build used in staging"
           echo "✅ Deployed to production successfully!"
