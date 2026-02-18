@@ -52,7 +52,7 @@ runs:
       if: steps.cache-deps.outputs.cache-hit != 'true'
       shell: bash
       run: |
-        if [ -f "package.json" ]; then
+        if [ ! -f "package.json" ]; then
           echo "Cache miss - installing dependencies..."
           npm ci || npm install
         else
