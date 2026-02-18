@@ -26,7 +26,6 @@ jobs:
         uses: ./.github/actions/setup-node-advanced
         with:
           node-version: '18'
-          cache-dependency-path: 'package-lock.json'
       
       - name: Display outputs
         run: |
