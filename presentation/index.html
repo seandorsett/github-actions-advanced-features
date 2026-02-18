@@ -765,79 +765,33 @@ runs:
                 return;
             }
             
-            notesWindow = window.open('', 'Speaker Notes', 'width=800,height=600,scrollbars=yes,resizable=yes');
+            notesWindow = window.open('', 'Speaker Notes', 'width=800,height=600,scrollbars=yes,resizable=yes,noopener');
             
             if (!notesWindow) {
                 alert('Unable to open speaker notes window. Please allow popups for this site.');
                 return;
             }
             
-            notesWindow.document.write(`
-                    <!DOCTYPE html>
-                    <html lang="en">
-                    <head>
-                        <meta charset="UTF-8">
-                        <title>Speaker Notes</title>
-                        <style>
-                            body {
-                                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-                                margin: 0;
-                                padding: 20px;
-                                background: #f5f5f5;
-                            }
-                            .notes-container {
-                                max-width: 800px;
-                                margin: 0 auto;
-                                background: white;
-                                padding: 30px;
-                                border-radius: 10px;
-                                box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-                            }
-                            .slide-title {
-                                color: #667eea;
-                                font-size: 1.8em;
-                                margin-bottom: 15px;
-                                padding-bottom: 10px;
-                                border-bottom: 3px solid #667eea;
-                            }
-                            .notes-content {
-                                color: #333;
-                                line-height: 1.8;
-                                font-size: 1.1em;
-                            }
-                            .notes-content h4 {
-                                color: #764ba2;
-                                margin-top: 20px;
-                                margin-bottom: 10px;
-                            }
-                            .notes-content p {
-                                margin-bottom: 15px;
-                            }
-                            .no-notes {
-                                color: #999;
-                                font-style: italic;
-                            }
-                            .slide-counter {
-                                background: #667eea;
-                                color: white;
-                                padding: 10px 20px;
-                                border-radius: 5px;
-                                display: inline-block;
-                                margin-bottom: 20px;
-                                font-weight: bold;
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="notes-container" id="notesContent">
-                            <div class="slide-counter">Loading...</div>
-                            <div class="slide-title">Speaker Notes</div>
-                            <div class="notes-content">Opening speaker notes...</div>
-                        </div>
-                    </body>
-                    </html>
-                `);
-            notesWindow.document.close();
+            // Create the notes window HTML structure safely
+            const notesDoc = notesWindow.document;
+            notesDoc.open();
+            notesDoc.write('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Speaker Notes</title>');
+            notesDoc.write('<style>');
+            notesDoc.write('body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }');
+            notesDoc.write('.notes-container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }');
+            notesDoc.write('.slide-title { color: #667eea; font-size: 1.8em; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 3px solid #667eea; }');
+            notesDoc.write('.notes-content { color: #333; line-height: 1.8; font-size: 1.1em; }');
+            notesDoc.write('.notes-content h4 { color: #764ba2; margin-top: 20px; margin-bottom: 10px; }');
+            notesDoc.write('.notes-content p { margin-bottom: 15px; }');
+            notesDoc.write('.no-notes { color: #999; font-style: italic; }');
+            notesDoc.write('.slide-counter { background: #667eea; color: white; padding: 10px 20px; border-radius: 5px; display: inline-block; margin-bottom: 20px; font-weight: bold; }');
+            notesDoc.write('</style></head><body>');
+            notesDoc.write('<div class="notes-container" id="notesContent">');
+            notesDoc.write('<div class="slide-counter">Loading...</div>');
+            notesDoc.write('<div class="slide-title">Speaker Notes</div>');
+            notesDoc.write('<div class="notes-content">Opening speaker notes...</div>');
+            notesDoc.write('</div></body></html>');
+            notesDoc.close();
             updateNotesWindow();
         }
         
@@ -855,18 +809,30 @@ runs:
                 
                 let notesHTML = '<p class="no-notes">No speaker notes for this slide.</p>';
                 if (notesElement) {
+                    // Notes content comes from trusted source (the presentation HTML itself)
                     notesHTML = notesElement.innerHTML;
                 }
                 
-                const titleText = slideTitle ? slideTitle.textContent : 'Slide ' + (currentSlide + 1);
+                // Use textContent for the title for safety
+                const titleText = slideTitle ? slideTitle.textContent : `Slide ${currentSlide + 1}`;
                 
                 const notesContent = notesWindow.document.getElementById('notesContent');
                 if (notesContent) {
-                    notesContent.innerHTML = `
-                        <div class="slide-counter">Slide ${currentSlide + 1} of ${slides.length}</div>
-                        <div class="slide-title">${titleText}</div>
-                        <div class="notes-content">${notesHTML}</div>
-                    `;
+                    // Build the counter and title elements safely
+                    const counterDiv = notesContent.querySelector('.slide-counter');
+                    const titleDiv = notesContent.querySelector('.slide-title');
+                    const contentDiv = notesContent.querySelector('.notes-content');
+                    
+                    if (counterDiv) {
+                        counterDiv.textContent = `Slide ${currentSlide + 1} of ${slides.length}`;
+                    }
+                    if (titleDiv) {
+                        titleDiv.textContent = titleText;
+                    }
+                    if (contentDiv) {
+                        // Notes HTML comes from the trusted presentation source
+                        contentDiv.innerHTML = notesHTML;
+                    }
                 }
             }
         }
