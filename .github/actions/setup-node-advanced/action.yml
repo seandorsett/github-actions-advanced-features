@@ -37,6 +37,7 @@ runs:
     
     - name: Cache dependencies
       id: cache-deps
+      if: ${{ hashFiles(inputs.cache-dependency-path) != '' }}
       uses: actions/cache@v4
       with:
         path: |
@@ -61,7 +62,9 @@ runs:
     - name: Cache status
       shell: bash
       run: |
-        if [ "${{ steps.cache-deps.outputs.cache-hit }}" == "true" ]; then
+        if [ "${{ hashFiles(inputs.cache-dependency-path) }}" == "" ]; then
+          echo "ℹ️ No dependency lock file found at '${{ inputs.cache-dependency-path }}' - skipping cache"
+        elif [ "${{ steps.cache-deps.outputs.cache-hit }}" == "true" ]; then
           echo "✅ Cache hit! Dependencies restored from cache"
         else
           echo "❌ Cache miss - dependencies installed fresh"
