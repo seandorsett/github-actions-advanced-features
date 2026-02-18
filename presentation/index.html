@@ -463,7 +463,7 @@ runs:
             </ul>
             <h3>2. Scope: steps vs jobs</h3>
             <ul>
-                <li><strong>Composite Action = steps only</strong>: Packages steps into one reusable component; inherits the caller job's environment</li>
+                <li><strong>Composite Action = steps only</strong>: Packages steps into one reusable component; runs on the same runner as the caller job</li>
                 <li><strong>Reusable Workflow = full workflow with jobs</strong>: A complete workflow you can run from other workflows; defines multiple jobs with their own runners and dependencies</li>
             </ul>
             <div class="notes">
