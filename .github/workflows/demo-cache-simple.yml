@@ -1,0 +1,63 @@
+name: "Demo 9: Caching - Simple"
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'demos/caching-artifacts/**'
+
+permissions:
+  contents: read
+
+jobs:
+  build-with-cache:
+    name: Build with Dependency Caching
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.npm
+            node_modules
+          key: ${{ runner.os }}-node-18-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-18-
+            ${{ runner.os }}-node-
+      
+      - name: Cache status
+        run: |
+          if [ "${{ steps.cache.outputs.cache-hit }}" == "true" ]; then
+            echo "✅ Cache hit! Dependencies restored from cache"
+            echo "This saves significant time in the workflow"
+          else
+            echo "❌ Cache miss - dependencies will be installed"
+            echo "Subsequent runs will benefit from caching"
+          fi
+      
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          # Create a minimal package.json if it doesn't exist
+          if [ ! -f "package.json" ]; then
+            echo '{"name":"demo","version":"1.0.0"}' > package.json
+          fi
+          npm install express
+      
+      - name: Build project
+        run: |
+          echo "Building project..."
+          echo "Using cached dependencies for faster builds!"
+          echo "✅ Build completed"

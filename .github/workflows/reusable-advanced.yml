@@ -1,0 +1,81 @@
+name: "Reusable Workflow - Advanced (Called)"
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: 'Target environment for deployment'
+        required: true
+        type: string
+      version:
+        description: 'Version to deploy'
+        required: false
+        type: string
+        default: 'latest'
+      dry-run:
+        description: 'Whether to perform a dry run'
+        required: false
+        type: boolean
+        default: false
+    outputs:
+      build-id:
+        description: 'The build identifier'
+        value: ${{ jobs.build.outputs.id }}
+      deployment-url:
+        description: 'The deployment URL'
+        value: ${{ jobs.build.outputs.url }}
+    secrets:
+      deploy-token:
+        description: 'Token for deployment'
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      id: ${{ steps.build-step.outputs.build-id }}
+      url: ${{ steps.build-step.outputs.deploy-url }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Display inputs
+        run: |
+          echo "Environment: ${{ inputs.environment }}"
+          echo "Version: ${{ inputs.version }}"
+          echo "Dry Run: ${{ inputs.dry-run }}"
+          echo "Has deploy token: ${{ secrets.deploy-token != '' }}"
+      
+      - name: Build application
+        id: build-step
+        run: |
+          echo "🔨 Building application for ${{ inputs.environment }}"
+          
+          # Generate a mock build ID
+          BUILD_ID="build-$(date +%s)"
+          echo "build-id=${BUILD_ID}" >> $GITHUB_OUTPUT
+          
+          # Generate a mock deployment URL
+          DEPLOY_URL="https://${{ inputs.environment }}.example.com"
+          echo "deploy-url=${DEPLOY_URL}" >> $GITHUB_OUTPUT
+          
+          echo "Build ID: ${BUILD_ID}"
+          echo "Deployment URL: ${DEPLOY_URL}"
+      
+      - name: Deploy (or dry run)
+        run: |
+          if [ "${{ inputs.dry-run }}" == "true" ]; then
+            echo "🔍 DRY RUN: Would deploy to ${{ inputs.environment }}"
+          else
+            echo "🚀 Deploying to ${{ inputs.environment }}"
+          fi
+      
+      - name: Summary
+        run: |
+          echo "✅ Reusable workflow completed!"
+          echo "Environment: ${{ inputs.environment }}"
+          echo "Build ID: ${{ steps.build-step.outputs.build-id }}"

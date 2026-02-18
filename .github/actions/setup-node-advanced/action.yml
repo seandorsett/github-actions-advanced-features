@@ -1,0 +1,68 @@
+name: 'Setup Node with Caching'
+description: 'Install Node.js with specific version and cache dependencies'
+author: 'GitHub Actions Demo'
+
+inputs:
+  node-version:
+    description: 'Node.js version to use'
+    required: true
+    default: '18'
+  cache-dependency-path:
+    description: 'Path to dependency file (package-lock.json, yarn.lock, etc.)'
+    required: false
+    default: 'package-lock.json'
+
+outputs:
+  cache-hit:
+    description: 'Whether the cache was hit'
+    value: ${{ steps.cache-deps.outputs.cache-hit }}
+  node-version:
+    description: 'The Node.js version that was installed'
+    value: ${{ steps.setup-node.outputs.node-version }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Node.js ${{ inputs.node-version }}
+      id: setup-node
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+    
+    - name: Display versions
+      shell: bash
+      run: |
+        echo "Node version: $(node --version)"
+        echo "NPM version: $(npm --version)"
+    
+    - name: Cache dependencies
+      id: cache-deps
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.npm
+          node_modules
+        key: ${{ runner.os }}-node-${{ inputs.node-version }}-${{ hashFiles(inputs.cache-dependency-path) }}
+        restore-keys: |
+          ${{ runner.os }}-node-${{ inputs.node-version }}-
+          ${{ runner.os }}-node-
+    
+    - name: Install dependencies
+      if: steps.cache-deps.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        if [ -f "package.json" ]; then
+          echo "Cache miss - installing dependencies..."
+          npm ci || npm install
+        else
+          echo "No package.json found"
+        fi
+    
+    - name: Cache status
+      shell: bash
+      run: |
+        if [ "${{ steps.cache-deps.outputs.cache-hit }}" == "true" ]; then
+          echo "✅ Cache hit! Dependencies restored from cache"
+        else
+          echo "❌ Cache miss - dependencies installed fresh"
+        fi

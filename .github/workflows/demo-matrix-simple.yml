@@ -1,0 +1,42 @@
+name: "Demo 1: Matrix Builds - Simple"
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'demos/matrix-builds/**'
+
+permissions:
+  contents: read
+
+jobs:
+  test-matrix:
+    name: Test on ${{ matrix.os }} with Node ${{ matrix.node }}
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [16, 18, 20]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      
+      - name: Display Node version
+        run: node --version
+      
+      - name: Display NPM version
+        run: npm --version
+      
+      - name: Run simple test
+        run: |
+          echo "Testing on ${{ matrix.os }} with Node ${{ matrix.node }}"
+          echo "Matrix job completed successfully!"

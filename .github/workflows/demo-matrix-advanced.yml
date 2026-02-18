@@ -1,0 +1,67 @@
+name: "Demo 2: Matrix Builds - Advanced"
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'demos/matrix-builds/**'
+
+permissions:
+  contents: read
+
+jobs:
+  test-advanced-matrix:
+    name: Test on ${{ matrix.os }} with Node ${{ matrix.node }}${{ matrix.experimental && ' (experimental)' || '' }}
+    runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.experimental || false }}
+    
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node: [16, 18, 20]
+        include:
+          # Add an experimental job with latest Node on Ubuntu
+          - os: ubuntu-latest
+            node: 20
+            experimental: true
+            coverage: true
+        exclude:
+          # Exclude Node 16 on Windows (hypothetical unsupported combination)
+          - os: windows-latest
+            node: 16
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      
+      - name: Display configuration
+        run: |
+          echo "Operating System: ${{ matrix.os }}"
+          echo "Node Version: ${{ matrix.node }}"
+          echo "Experimental: ${{ matrix.experimental || 'false' }}"
+          echo "Coverage: ${{ matrix.coverage || 'false' }}"
+      
+      - name: Run tests
+        run: |
+          echo "Running tests on ${{ matrix.os }} with Node ${{ matrix.node }}"
+          node --version
+      
+      - name: Run coverage (if enabled)
+        if: matrix.coverage
+        run: |
+          echo "Running code coverage analysis"
+          echo "Coverage report would be generated here"
+      
+      - name: Summary
+        run: |
+          echo "✅ Matrix job completed!"
+          echo "Configuration: ${{ matrix.os }} + Node ${{ matrix.node }}"

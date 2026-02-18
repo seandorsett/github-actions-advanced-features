@@ -1,0 +1,79 @@
+name: "Demo 8: Environment Protection - Advanced"
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'demos/environment-protection/**'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build Application
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Build application
+        run: |
+          echo "🔨 Building application..."
+          echo "Build completed successfully!"
+      
+      - name: Run tests
+        run: |
+          echo "Running test suite..."
+          echo "✅ All tests passed!"
+  
+  deploy-staging:
+    name: Deploy to Staging
+    needs: build
+    runs-on: ubuntu-latest
+    permissions: {}
+    environment:
+      name: staging
+      url: https://staging.example.com
+    
+    steps:
+      - name: Deploy to staging
+        run: |
+          echo "🚀 Deploying to staging environment"
+          echo "No approval required for staging"
+      
+      - name: Verify deployment
+        run: |
+          echo "✅ Staging deployment verified"
+  
+  deploy-production:
+    name: Deploy to Production
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    permissions: {}
+    environment:
+      name: production
+      url: https://example.com
+    
+    steps:
+      - name: Deploy to production
+        run: |
+          echo "🚀 Deploying to production environment"
+          echo "⚠️  This deployment requires approval (configured in Settings)"
+          echo "Deployment would proceed after approval..."
+      
+      - name: Run production smoke tests
+        run: |
+          echo "Running production smoke tests..."
+          echo "✅ All production tests passed!"
+      
+      - name: Notify stakeholders
+        run: |
+          echo "📧 Notifying stakeholders of production deployment"
+          echo "✅ Production deployment completed successfully!"
+          echo "URL: https://example.com"

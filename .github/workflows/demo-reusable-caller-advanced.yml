@@ -1,0 +1,43 @@
+name: "Demo 4: Call Reusable Workflow - Advanced"
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'demos/reusable-workflows/**'
+
+permissions: {}
+
+jobs:
+  call-for-staging:
+    name: Deploy to Staging
+    uses: ./.github/workflows/reusable-advanced.yml
+    with:
+      environment: staging
+      version: 'v1.2.3'
+      dry-run: false
+    secrets:
+      deploy-token: ${{ secrets.DEPLOY_TOKEN || 'mock-token-for-demo' }}
+  
+  call-for-production:
+    name: Deploy to Production (Dry Run)
+    needs: call-for-staging
+    uses: ./.github/workflows/reusable-advanced.yml
+    with:
+      environment: production
+      version: 'v1.2.3'
+      dry-run: true
+    secrets:
+      deploy-token: ${{ secrets.DEPLOY_TOKEN || 'mock-token-for-demo' }}
+  
+  display-outputs:
+    name: Display Outputs from Staging
+    needs: call-for-staging
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show outputs
+        run: |
+          echo "Staging Build ID: ${{ needs.call-for-staging.outputs.build-id }}"
+          echo "Staging URL: ${{ needs.call-for-staging.outputs.deployment-url }}"
