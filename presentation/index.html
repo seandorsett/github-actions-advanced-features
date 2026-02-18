@@ -721,6 +721,8 @@ runs:
         
         function handleKeyPress(event) {
             // Don't interfere with form elements or buttons (for accessibility)
+            // This prevents keyboard navigation from disrupting screen readers
+            // and normal form/button interactions
             const activeElement = event.target;
             if (activeElement.tagName === 'BUTTON' || 
                 activeElement.tagName === 'INPUT' || 
@@ -738,7 +740,6 @@ runs:
                     nextSlide();
                     break;
                 case ' ':
-                    // Spacebar navigation (only when not on interactive elements)
                     event.preventDefault();
                     nextSlide();
                     break;
@@ -765,7 +766,10 @@ runs:
                 return;
             }
             
-            notesWindow = window.open('', 'Speaker Notes', 'width=800,height=600,scrollbars=yes,resizable=yes,noopener');
+            // Note: We intentionally do not use 'noopener' here because we need 
+            // bidirectional communication with the notes window. The security risk
+            // is mitigated because both windows are from the same origin.
+            notesWindow = window.open('', 'Speaker Notes', 'width=800,height=600,scrollbars=yes,resizable=yes');
             
             if (!notesWindow) {
                 alert('Unable to open speaker notes window. Please allow popups for this site.');
