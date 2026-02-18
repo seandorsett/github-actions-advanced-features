@@ -37,8 +37,9 @@ The presentation is a self-contained HTML file located at `presentation/index.ht
 - **📝 Speaker Notes button**: Open speaker notes in a separate window
 
 **Keyboard Shortcuts:**
-- **Arrow Right / Arrow Down / Space / Page Down**: Next slide
+- **Arrow Right / Arrow Down / Page Down**: Next slide
 - **Arrow Left / Arrow Up / Page Up**: Previous slide
+- **Space**: Next slide (disabled when buttons are focused for screen reader compatibility)
 - **Home**: Jump to first slide
 - **End**: Jump to last slide
 

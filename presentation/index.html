@@ -259,7 +259,7 @@
 <body>
     <!-- Navigation Controls -->
     <button class="notes-button" onclick="openNotesWindow()">📝 Speaker Notes</button>
-    <div class="slide-counter" id="slideCounter">Slide 1 of 18</div>
+    <div class="slide-counter" id="slideCounter">Loading...</div>
     <div class="navigation">
         <button class="nav-button" id="prevButton" onclick="previousSlide()">← Previous</button>
         <button class="nav-button" id="nextButton" onclick="nextSlide()">Next →</button>
@@ -720,11 +720,20 @@ runs:
         }
         
         function handleKeyPress(event) {
+            // Don't interfere with form elements or buttons (for accessibility)
+            if (event.target.tagName === 'BUTTON' || event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
+                return;
+            }
+            
             switch(event.key) {
                 case 'ArrowRight':
                 case 'ArrowDown':
-                case ' ':
                 case 'PageDown':
+                    event.preventDefault();
+                    nextSlide();
+                    break;
+                case ' ':
+                    // Spacebar navigation (only when not on interactive elements)
                     event.preventDefault();
                     nextSlide();
                     break;
