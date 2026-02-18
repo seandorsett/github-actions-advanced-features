@@ -453,6 +453,63 @@ runs:
             </div>
         </div>
 
+        <!-- Comparison: Reusable Workflows vs Composite Actions -->
+        <div class="slide">
+            <h2>Reusable Workflows vs Composite Actions</h2>
+            <h3>1. Where they live & how you invoke them</h3>
+            <ul>
+                <li><strong>Composite Action</strong>: Defined in <code>action.yml</code>, invoked as a <em>step</em> inside a job (<code>uses: ./path/to/action</code>)</li>
+                <li><strong>Reusable Workflow</strong>: Normal workflow YAML file, invoked at the <em>job level</em> (<code>uses: .github/workflows/file.yml</code> with <code>workflow_call</code>)</li>
+            </ul>
+            <h3>2. Scope: steps vs jobs</h3>
+            <ul>
+                <li><strong>Composite Action = steps only</strong>: Packages steps into one reusable component; inherits the caller job's environment</li>
+                <li><strong>Reusable Workflow = full workflow with jobs</strong>: A complete workflow you can run from other workflows; defines multiple jobs with their own runners and dependencies</li>
+            </ul>
+            <div class="notes">
+                <h4>Presenter Notes:</h4>
+                <p>This is the key conceptual difference. Composite actions are "lightweight step grouping" while reusable workflows are "complete job orchestration". Use this distinction to guide your design choices. Time: ~3 minutes.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Reusable Workflows vs Composite Actions (cont.)</h2>
+            <h3>3. Inputs & secrets</h3>
+            <ul>
+                <li><strong>Reusable Workflow</strong>: Inputs + secrets defined on <code>workflow_call</code>; callers pass them via <code>with:</code> and <code>secrets:</code></li>
+                <li><strong>Composite Action</strong>: Inputs/outputs in <code>action.yml</code>; secrets must be passed explicitly from caller</li>
+                <li><strong>Limitation</strong>: Environment secrets cannot be passed from the caller workflow via <code>workflow_call</code></li>
+            </ul>
+            <h3>4. Orchestration & features</h3>
+            <ul>
+                <li><strong>Reusable Workflow</strong>: Defines the entire job; can enforce runner labels; supports full workflow features</li>
+                <li><strong>Composite Action</strong>: Defines a list of steps; gives flexibility to run before/after other steps</li>
+            </ul>
+            <div class="notes">
+                <h4>Presenter Notes:</h4>
+                <p>Reusable workflows provide complete job-level orchestration (multiple jobs, dependencies, matrix strategies), while composite actions are for step-level reuse. Choose based on your orchestration needs. Time: ~3 minutes.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Choosing Between Them</h2>
+            <h3>Use a Composite Action when...</h3>
+            <ul>
+                <li>You need <strong>reusable step sequences</strong> (setup toolchain, cache, install, standard logging wrapper)</li>
+                <li>The logic fits naturally inside one job and should run within the caller's job context</li>
+            </ul>
+            <h3>Use a Reusable Workflow when...</h3>
+            <ul>
+                <li>You need to <strong>standardize an entire pipeline pattern</strong> across repos (build+test → security scanning → deploy jobs)</li>
+                <li>You need strongly typed inputs and secrets, and want to keep workflows centrally maintained</li>
+                <li>You need <strong>job-level structure</strong> (multiple jobs, job dependencies, distinct runners)</li>
+            </ul>
+            <div class="notes">
+                <h4>Presenter Notes:</h4>
+                <p>Quick decision guide: If you need reusable chunk inside a job (setup toolchain, cache, install), that's a Composite Action. If you need to standardize an entire pipeline pattern across repos (build+test, security scanning, deploy jobs, keep it centrally maintained), that's a Reusable Workflow. Time: ~2 minutes.</p>
+            </div>
+        </div>
+
         <!-- Composite Actions: Advanced Demo -->
         <div class="slide">
             <h2>Composite Actions: Advanced Demo</h2>
