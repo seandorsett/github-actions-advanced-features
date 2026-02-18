@@ -1,0 +1,14 @@
+name: "Demo 3: Call Reusable Workflow - Simple"
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'demos/reusable-workflows/**'
+
+jobs:
+  call-reusable-workflow:
+    name: Call Simple Reusable Workflow
+    uses: ./.github/workflows/reusable-simple.yml

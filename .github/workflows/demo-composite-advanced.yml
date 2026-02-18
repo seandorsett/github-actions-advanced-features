@@ -1,0 +1,43 @@
+name: "Demo 6: Composite Action - Advanced"
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'demos/composite-actions/**'
+      - '.github/actions/setup-node-advanced/**'
+
+jobs:
+  use-advanced-composite:
+    name: Use Advanced Composite Action
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Use advanced composite action with Node 18
+        id: setup-18
+        uses: ./.github/actions/setup-node-advanced
+        with:
+          node-version: '18'
+          cache-dependency-path: 'package-lock.json'
+      
+      - name: Display outputs
+        run: |
+          echo "Cache Hit: ${{ steps.setup-18.outputs.cache-hit }}"
+          echo "Node Version: ${{ steps.setup-18.outputs.node-version }}"
+      
+      - name: Run with different Node version
+        id: setup-20
+        uses: ./.github/actions/setup-node-advanced
+        with:
+          node-version: '20'
+      
+      - name: Compare results
+        run: |
+          echo "Node 18 - Cache Hit: ${{ steps.setup-18.outputs.cache-hit }}"
+          echo "Node 20 - Cache Hit: ${{ steps.setup-20.outputs.cache-hit }}"
+          echo "✅ Advanced composite action with inputs/outputs works!"

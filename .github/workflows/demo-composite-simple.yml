@@ -1,0 +1,28 @@
+name: "Demo 5: Composite Action - Simple"
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'demos/composite-actions/**'
+      - '.github/actions/setup-node-simple/**'
+
+jobs:
+  use-composite-action:
+    name: Use Simple Composite Action
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Use custom composite action
+        uses: ./.github/actions/setup-node-simple
+      
+      - name: Verify setup
+        run: |
+          echo "✅ Composite action completed!"
+          echo "Node is ready to use"
+          node --version

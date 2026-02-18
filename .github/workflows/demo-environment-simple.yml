@@ -1,0 +1,37 @@
+name: "Demo 7: Environment Protection - Simple"
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'demos/environment-protection/**'
+
+jobs:
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: https://staging.example.com
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Deploy to staging
+        run: |
+          echo "🚀 Deploying to staging environment"
+          echo "Environment: staging"
+          echo "URL: https://staging.example.com"
+      
+      - name: Run smoke tests
+        run: |
+          echo "Running smoke tests..."
+          echo "✅ All tests passed!"
+      
+      - name: Deployment summary
+        run: |
+          echo "✅ Deployment to staging completed successfully!"
+          echo "Access the application at: https://staging.example.com"

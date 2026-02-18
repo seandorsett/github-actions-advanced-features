@@ -1,0 +1,27 @@
+name: 'Setup Node with Dependencies'
+description: 'Install Node.js and project dependencies'
+author: 'GitHub Actions Demo'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+    
+    - name: Display Node version
+      shell: bash
+      run: |
+        echo "Node version: $(node --version)"
+        echo "NPM version: $(npm --version)"
+    
+    - name: Install dependencies (if package.json exists)
+      shell: bash
+      run: |
+        if [ -f "package.json" ]; then
+          echo "Installing dependencies..."
+          npm ci || npm install
+        else
+          echo "No package.json found, skipping dependency installation"
+        fi

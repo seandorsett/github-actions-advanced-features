@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Actions Advanced Features</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+        
+        .slides {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .slide {
+            background: white;
+            border-radius: 10px;
+            padding: 60px;
+            margin: 20px 0;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .slide h1 {
+            color: #2f3542;
+            font-size: 3em;
+            margin-bottom: 20px;
+            border-bottom: 4px solid #667eea;
+            padding-bottom: 20px;
+        }
+        
+        .slide h2 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+        }
+        
+        .slide h3 {
+            color: #764ba2;
+            font-size: 1.8em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        .slide ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .slide li {
+            font-size: 1.3em;
+            line-height: 2;
+            padding-left: 40px;
+            position: relative;
+            margin-bottom: 15px;
+        }
+        
+        .slide li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.5em;
+        }
+        
+        .slide code {
+            background: #f1f2f6;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #e74c3c;
+        }
+        
+        .slide pre {
+            background: #2f3542;
+            color: #f1f2f6;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.9em;
+            line-height: 1.5;
+            margin: 20px 0;
+        }
+        
+        .slide pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .notes {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 4px;
+        }
+        
+        .notes h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .notes p {
+            color: #856404;
+            line-height: 1.6;
+        }
+        
+        .demo-badge {
+            display: inline-block;
+            background: #27ae60;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        
+        .title-slide {
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .title-slide h1 {
+            color: white;
+            border-bottom: none;
+            font-size: 4em;
+        }
+        
+        .title-slide p {
+            font-size: 1.5em;
+            margin-top: 20px;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        .highlight {
+            background: #e8f4fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: white;
+            font-size: 0.9em;
+        }
+        
+        @media print {
+            .slide {
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slides">
+        <!-- Title Slide -->
+        <div class="slide title-slide">
+            <h1>GitHub Actions Advanced Features</h1>
+            <p>Building Powerful CI/CD Pipelines</p>
+            <p style="margin-top: 40px; font-size: 1.2em;">55 Minutes • 5 Topics • 10 Demos</p>
+            <div class="notes" style="background: rgba(255,255,255,0.2); border-left: 4px solid white;">
+                <h4 style="color: white;">Presenter Notes:</h4>
+                <p style="color: white;">Welcome everyone! Today we'll explore 5 advanced GitHub Actions features. Each topic includes simple and advanced demos. We'll cover Matrix Builds, Reusable Workflows, Composite Actions, Environment Protection Rules, and Caching & Artifacts. We have 50 minutes for presentation and demos, plus 5 minutes for Q&A.</p>
+            </div>
+        </div>
+
+        <!-- Agenda Slide -->
+        <div class="slide">
+            <h1>Agenda</h1>
+            <ul>
+                <li><strong>Matrix Builds</strong> (10 min) - Parallelize across versions & platforms</li>
+                <li><strong>Reusable Workflows</strong> (10 min) - DRY principle for workflows</li>
+                <li><strong>Composite Actions</strong> (10 min) - Build custom actions</li>
+                <li><strong>Environment Protection Rules</strong> (10 min) - Control deployments</li>
+                <li><strong>Caching & Artifacts</strong> (10 min) - Speed up workflows</li>
+                <li><strong>Q&A</strong> (5 min)</li>
+            </ul>
+            <div class="notes">
+                <h4>Presenter Notes:</h4>
+                <p>Each section is designed to take about 10 minutes including demo time. Keep an eye on the clock. If running over on one section, adjust subsequent sections accordingly. The demos are all in the repository and can be shown running in GitHub Actions.</p>
+            </div>
+        </div>
+
+        <!-- Matrix Builds: Introduction -->
+        <div class="slide">
+            <h1>1. Matrix Builds</h1>
+            <h3>What are Matrix Builds?</h3>
+            <ul>
+                <li>Run jobs across multiple versions, platforms, or configurations</li>
+                <li>Automatically creates job for each combination</li>
+                <li>Perfect for testing compatibility</li>
+                <li>Reduces workflow duplication</li>
+            </ul>
+            <div class="notes">
+                <h4>Presenter Notes:</h4>
+                <p>Matrix builds are essential when you need to test your code across different environments. Instead of creating separate jobs for Node 16, 18, and 20, you define it once and GitHub Actions creates all combinations automatically. This is time ~2 minutes, then move to simple demo.</p>
+            </div>
+        </div>
+
+        <!-- Matrix Builds: Simple Demo -->
+        <div class="slide">
+            <h2>Matrix Builds: Simple Demo</h2>
+            <span class="demo-badge">DEMO 1: Basic Matrix</span>
+            <pre><code>strategy:
+  matrix:
+    os: [ubuntu-latest, windows-latest, macos-latest]
+    node: [16, 18, 20]
+    
+runs-on: ${{ matrix.os }}
+steps:
+  - uses: actions/setup-node@v3
+    with:
+      node-version: ${{ matrix.node }}</code></pre>
+            <p><strong>Result:</strong> Creates 9 jobs (3 OS × 3 Node versions)</p>
+            <div class="notes">
+                <h4>Presenter Notes:</h4>
+                <p>Show the workflow file in demos/matrix-builds/simple.yml. Navigate to Actions tab and show the matrix visualization. Point out how all 9 jobs run in parallel. This creates 9 jobs automatically - 3 operating systems times 3 Node versions. Time: ~3 minutes including navigation.</p>
+            </div>
+        </div>
+
+        <!-- Matrix Builds: Advanced Demo -->
+        <div class="slide">
+            <h2>Matrix Builds: Advanced Demo</h2>
+            <span class="demo-badge">DEMO 2: Matrix with Include/Exclude</span>
+            <pre><code>strategy:
+  matrix:
+    os: [ubuntu-latest, windows-latest]
+    node: [16, 18, 20]
+    include:
+      - os: ubuntu-latest
+        node: 20
+        experimental: true
+    exclude:
+      - os: windows-latest
+        node: 16</code></pre>
+            <p><strong>Advanced Features:</strong> <code>include</code> adds extra jobs, <code>exclude</code> removes combinations</p>
+            <div class="notes">
+                <h4>Presenter Notes:</h4>
+                <p>Show demos/matrix-builds/advanced.yml. Explain that exclude removes Windows + Node 16 (maybe Node 16 isn't supported on Windows in your project). Include adds special configurations like experimental features. Also mention fail-fast and max-parallel options. Time: ~5 minutes.</p>
+            </div>
+        </div>
+
+        <!-- Reusable Workflows: Introduction -->
+        <div class="slide">
+            <h1>2. Reusable Workflows</h1>
+            <h3>Why Reusable Workflows?</h3>
+            <ul>
+                <li>Eliminate workflow duplication across repositories</li>
+                <li>Centralize CI/CD logic in one place</li>
+                <li>Pass inputs and secrets to workflows</li>
+                <li>Return outputs from workflows</li>
+                <li>Easier maintenance and updates</li>
+            </ul>
+            <div class="notes">
+                <h4>Presenter Notes:</h4>
+                <p>Reusable workflows let you define a workflow once and call it from other workflows. This is DRY (Don't Repeat Yourself) for GitHub Actions. Great for organizations with multiple repos that need similar CI/CD processes. Time: ~2 minutes.</p>
+            </div>
+        </div>
+
+        <!-- Reusable Workflows: Simple Demo -->
+        <div class="slide">
+            <h2>Reusable Workflows: Simple Demo</h2>
+            <span class="demo-badge">DEMO 3: Basic Reusable Workflow</span>
+            <p><strong>Called Workflow:</strong></p>
+            <pre><code>on:
+  workflow_call:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Reusable workflow!"</code></pre>
+            <p><strong>Caller Workflow:</strong></p>
+            <pre><code>jobs:
+  call-workflow:
+    uses: ./.github/workflows/reusable-simple.yml</code></pre>
+            <div class="notes">
+                <h4>Presenter Notes:</h4>
+                <p>Show both files: demos/reusable-workflows/reusable-simple.yml and caller-simple.yml. The key is workflow_call trigger. Can be called from same repo or other repos (with proper permissions). Time: ~3 minutes.</p>
+            </div>
+        </div>
+
+        <!-- Reusable Workflows: Advanced Demo -->
+        <div class="slide">
+            <h2>Reusable Workflows: Advanced Demo</h2>
+            <span class="demo-badge">DEMO 4: Workflow with Inputs & Outputs</span>
+            <pre><code>on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+    outputs:
+      build-id:
+        value: ${{ jobs.build.outputs.id }}
+    secrets:
+      deploy-token:
+        required: true</code></pre>
+            <div class="notes">
+                <h4>Presenter Notes:</h4>
+                <p>Show demos/reusable-workflows/reusable-advanced.yml and caller-advanced.yml. Demonstrate passing inputs (like environment name), secrets, and receiving outputs. This enables powerful workflow composition. Time: ~5 minutes.</p>
+            </div>
+        </div>
+
+        <!-- Composite Actions: Introduction -->
+        <div class="slide">
+            <h1>3. Composite Actions</h1>
+            <h3>What are Composite Actions?</h3>
+            <ul>
+                <li>Bundle multiple steps into a single reusable action</li>
+                <li>Defined with <code>action.yml</code> file</li>
+                <li>Can use other actions within them</li>
+                <li>Support inputs, outputs, and environment variables</li>
+                <li>Different from reusable workflows (actions vs workflows)</li>
+            </ul>
+            <div class="notes">
+                <h4>Presenter Notes:</h4>
+                <p>Composite actions are at a lower level than reusable workflows. They're groups of steps you can reuse. Think of them as functions for your workflows. Great for common setup tasks like "install dependencies and cache". Time: ~2 minutes.</p>
+            </div>
+        </div>
+
+        <!-- Composite Actions: Simple Demo -->
+        <div class="slide">
+            <h2>Composite Actions: Simple Demo</h2>
+            <span class="demo-badge">DEMO 5: Basic Composite Action</span>
+            <p><strong>action.yml:</strong></p>
+            <pre><code>name: 'Setup Node with Cache'
+description: 'Install Node and cache dependencies'
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/setup-node@v3
+    - run: npm ci
+      shell: bash</code></pre>
+            <p><strong>Usage:</strong></p>
+            <pre><code>- uses: ./.github/actions/setup-node</code></pre>
+            <div class="notes">
+                <h4>Presenter Notes:</h4>
+                <p>Show demos/composite-actions/simple/action.yml and its usage in a workflow. Note the "using: composite" and that each run step needs a shell specified. Time: ~3 minutes.</p>
+            </div>
+        </div>
+
+        <!-- Composite Actions: Advanced Demo -->
+        <div class="slide">
+            <h2>Composite Actions: Advanced Demo</h2>
+            <span class="demo-badge">DEMO 6: Action with Inputs & Outputs</span>
+            <pre><code>inputs:
+  node-version:
+    description: 'Node version'
+    required: true
+    default: '18'
+outputs:
+  cache-hit:
+    description: 'Whether cache was hit'
+    value: ${{ steps.cache.outputs.cache-hit }}
+runs:
+  using: 'composite'
+  steps:
+    - id: cache
+      uses: actions/cache@v3</code></pre>
+            <div class="notes">
+                <h4>Presenter Notes:</h4>
+                <p>Show demos/composite-actions/advanced/action.yml. Demonstrate inputs allow customization and outputs can pass data back to the workflow. This makes actions truly reusable and flexible. Time: ~5 minutes.</p>
+            </div>
+        </div>
+
+        <!-- Environment Protection: Introduction -->
+        <div class="slide">
+            <h1>4. Environment Protection Rules</h1>
+            <h3>Why Environment Protection?</h3>
+            <ul>
+                <li>Control deployments to sensitive environments</li>
+                <li>Require manual approvals before deployment</li>
+                <li>Restrict which branches can deploy</li>
+                <li>Set wait timers before deployment</li>
+                <li>Limit deployment reviewers</li>
+            </ul>
+            <div class="notes">
+                <h4>Presenter Notes:</h4>
+                <p>Environment protection rules add governance to your deployments. Critical for production environments where you want human review or need to meet compliance requirements. These are configured in repository settings, not in workflow files. Time: ~2 minutes.</p>
+            </div>
+        </div>
+
+        <!-- Environment Protection: Simple Demo -->
+        <div class="slide">
+            <h2>Environment Protection: Simple Demo</h2>
+            <span class="demo-badge">DEMO 7: Basic Environment</span>
+            <pre><code>jobs:
+  deploy-staging:
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: https://staging.example.com
+    steps:
+      - run: echo "Deploying to staging"</code></pre>
+            <div class="highlight">
+                <p><strong>Environment configuration:</strong> Set up in Settings → Environments → New environment</p>
+            </div>
+            <div class="notes">
+                <h4>Presenter Notes:</h4>
+                <p>Show demos/environment-protection/simple.yml. Navigate to Settings → Environments to show where environments are configured. Show environment URL feature. The environment block links the job to environment protection rules. Time: ~3 minutes.</p>
+            </div>
+        </div>
+
+        <!-- Environment Protection: Advanced Demo -->
+        <div class="slide">
+            <h2>Environment Protection: Advanced Demo</h2>
+            <span class="demo-badge">DEMO 8: Production with Approvals</span>
+            <pre><code>jobs:
+  deploy-production:
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+    steps:
+      - run: echo "Deploying to production"</code></pre>
+            <div class="highlight">
+                <p><strong>Protection rules (configured in Settings):</strong></p>
+                <ul>
+                    <li>✓ Required reviewers (up to 6 reviewers)</li>
+                    <li>✓ Wait timer (0-43,200 minutes)</li>
+                    <li>✓ Deployment branches (selected branches only)</li>
+                </ul>
+            </div>
+            <div class="notes">
+                <h4>Presenter Notes:</h4>
+                <p>Show demos/environment-protection/advanced.yml. In Settings → Environments → production, show the protection rules configuration. Explain reviewers pause deployment until approval, wait timer adds delay, and branch restrictions limit which branches can deploy to production. Time: ~5 minutes.</p>
+            </div>
+        </div>
+
+        <!-- Caching & Artifacts: Introduction -->
+        <div class="slide">
+            <h1>5. Caching & Artifacts</h1>
+            <h3>Caching vs Artifacts</h3>
+            <div class="two-column">
+                <div>
+                    <h3>Caching</h3>
+                    <ul>
+                        <li>Speed up workflow runs</li>
+                        <li>Store dependencies</li>
+                        <li>Shared across workflow runs</li>
+                        <li>Automatically evicted after 7 days</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Artifacts</h3>
+                    <ul>
+                        <li>Share data between jobs</li>
+                        <li>Store build outputs</li>
+                        <li>Available for download</li>
+                        <li>Retained for 90 days (default)</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="notes">
+                <h4>Presenter Notes:</h4>
+                <p>Both speed up workflows but serve different purposes. Cache for dependencies that don't change often (node_modules, pip packages). Artifacts for job outputs like build files, test reports, or any data you need in later jobs or want to download. Time: ~2 minutes.</p>
+            </div>
+        </div>
+
+        <!-- Caching & Artifacts: Simple Demo -->
+        <div class="slide">
+            <h2>Caching & Artifacts: Simple Demo</h2>
+            <span class="demo-badge">DEMO 9: Basic Caching</span>
+            <pre><code>- uses: actions/cache@v3
+  with:
+    path: ~/.npm
+    key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+    restore-keys: |
+      ${{ runner.os }}-node-
+
+- run: npm ci</code></pre>
+            <p><strong>Key generation:</strong> Include dependencies in key to invalidate when changed</p>
+            <div class="notes">
+                <h4>Presenter Notes:</h4>
+                <p>Show demos/caching-artifacts/simple-cache.yml. Explain the cache key includes OS and hash of package-lock.json so cache invalidates when dependencies change. Restore-keys provide fallback options. Show cache hit/miss in workflow logs. Time: ~3 minutes.</p>
+            </div>
+        </div>
+
+        <!-- Caching & Artifacts: Advanced Demo -->
+        <div class="slide">
+            <h2>Caching & Artifacts: Advanced Demo</h2>
+            <span class="demo-badge">DEMO 10: Multi-stage with Artifacts</span>
+            <pre><code>jobs:
+  build:
+    steps:
+      - uses: actions/cache@v3
+        # ... cache setup
+      - run: npm run build
+      - uses: actions/upload-artifact@v3
+        with:
+          name: build-output
+          path: dist/
+  
+  deploy:
+    needs: build
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: build-output</code></pre>
+            <div class="notes">
+                <h4>Presenter Notes:</h4>
+                <p>Show demos/caching-artifacts/advanced.yml. Demonstrate caching in build job, then uploading artifacts. Deploy job downloads the artifact. This pattern separates concerns and enables deploying the same build to multiple environments. Also show artifact in Actions UI. Time: ~5 minutes.</p>
+            </div>
+        </div>
+
+        <!-- Best Practices -->
+        <div class="slide">
+            <h1>Best Practices</h1>
+            <ul>
+                <li><strong>Matrix Builds:</strong> Use fail-fast: false for CI, max-parallel to control costs</li>
+                <li><strong>Reusable Workflows:</strong> Version them, document inputs/outputs thoroughly</li>
+                <li><strong>Composite Actions:</strong> Keep them focused and single-purpose</li>
+                <li><strong>Environments:</strong> Always use for production, consider for staging</li>
+                <li><strong>Caching:</strong> Include dependency lock files in cache key</li>
+                <li><strong>Artifacts:</strong> Set appropriate retention periods to manage storage</li>
+            </ul>
+            <div class="notes">
+                <h4>Presenter Notes:</h4>
+                <p>Quick recap of key best practices. Emphasize that these features work great together - you might have a reusable workflow that uses composite actions, matrix builds, caching, and deploys to protected environments. Time: ~2 minutes.</p>
+            </div>
+        </div>
+
+        <!-- Q&A Slide -->
+        <div class="slide title-slide">
+            <h1>Questions & Answers</h1>
+            <p style="margin-top: 40px;">Thank you!</p>
+            <p style="margin-top: 20px; font-size: 1.2em;">All demos are in the repository:<br><code style="background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 5px;">github.com/seandorsett/github-actions-advanced-features</code></p>
+            <div class="notes" style="background: rgba(255,255,255,0.2); border-left: 4px solid white;">
+                <h4 style="color: white;">Presenter Notes:</h4>
+                <p style="color: white;">Open for questions. Common questions might include: How do costs work with matrix builds? Can reusable workflows call other reusable workflows? (Yes, up to 4 levels). What's the difference between composite actions and reusable workflows? How many environments can I have? Prepare to show examples in the Actions tab if questions arise.</p>
+            </div>
+        </div>
+
+        <!-- Resources Slide -->
+        <div class="slide">
+            <h1>Additional Resources</h1>
+            <ul>
+                <li>GitHub Actions Documentation: <code>docs.github.com/actions</code></li>
+                <li>Actions Marketplace: <code>github.com/marketplace?type=actions</code></li>
+                <li>GitHub Actions Community: <code>github.community</code></li>
+                <li>This Repository: All demos runnable and documented</li>
+            </ul>
+            <div class="highlight">
+                <p><strong>Next Steps:</strong> Try combining these features in your own projects. Start small, iterate, and build powerful CI/CD pipelines!</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>GitHub Actions Advanced Features • 2026 • All demos available in repository</p>
+    </div>
+</body>
+</html>

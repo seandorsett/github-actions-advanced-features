@@ -1,0 +1,23 @@
+name: "Reusable Workflow - Simple (Called)"
+
+on:
+  workflow_call:
+
+jobs:
+  reusable-job:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Run reusable workflow logic
+        run: |
+          echo "🚀 This is a reusable workflow!"
+          echo "It can be called from other workflows"
+          echo "Simplifying your CI/CD pipelines"
+      
+      - name: Perform common task
+        run: |
+          echo "Performing common build/test logic"
+          echo "This could be linting, testing, building, etc."
