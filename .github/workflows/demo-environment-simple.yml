@@ -8,6 +8,9 @@ on:
     paths:
       - 'demos/environment-protection/**'
 
+permissions:
+  contents: read
+
 jobs:
   deploy-staging:
     name: Deploy to Staging

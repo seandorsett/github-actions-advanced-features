@@ -8,10 +8,15 @@ on:
     paths:
       - 'demos/caching-artifacts/**'
 
+permissions:
+  contents: read
+
 jobs:
   build:
     name: Build with Multi-level Caching
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     
     steps:
       - name: Checkout code
@@ -78,6 +83,7 @@ jobs:
     name: Test with Artifacts
     needs: build
     runs-on: ubuntu-latest
+    permissions: {}
     
     steps:
       - name: Download build artifacts
@@ -104,6 +110,7 @@ jobs:
     name: Deploy to Staging
     needs: test
     runs-on: ubuntu-latest
+    permissions: {}
     
     steps:
       - name: Download build artifacts
@@ -123,6 +130,7 @@ jobs:
     name: Deploy to Production
     needs: deploy-staging
     runs-on: ubuntu-latest
+    permissions: {}
     
     steps:
       - name: Download build artifacts

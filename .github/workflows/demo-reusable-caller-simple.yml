@@ -8,6 +8,8 @@ on:
     paths:
       - 'demos/reusable-workflows/**'
 
+permissions: {}
+
 jobs:
   call-reusable-workflow:
     name: Call Simple Reusable Workflow

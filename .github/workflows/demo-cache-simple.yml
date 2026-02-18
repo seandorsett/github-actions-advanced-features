@@ -8,6 +8,9 @@ on:
     paths:
       - 'demos/caching-artifacts/**'
 
+permissions:
+  contents: read
+
 jobs:
   build-with-cache:
     name: Build with Dependency Caching

@@ -9,6 +9,9 @@ on:
       - 'demos/composite-actions/**'
       - '.github/actions/setup-node-advanced/**'
 
+permissions:
+  contents: read
+
 jobs:
   use-advanced-composite:
     name: Use Advanced Composite Action

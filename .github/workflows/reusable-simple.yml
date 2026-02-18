@@ -3,6 +3,9 @@ name: "Reusable Workflow - Simple (Called)"
 on:
   workflow_call:
 
+permissions:
+  contents: read
+
 jobs:
   reusable-job:
     runs-on: ubuntu-latest

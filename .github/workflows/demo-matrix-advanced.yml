@@ -8,6 +8,9 @@ on:
     paths:
       - 'demos/matrix-builds/**'
 
+permissions:
+  contents: read
+
 jobs:
   test-advanced-matrix:
     name: Test on ${{ matrix.os }} with Node ${{ matrix.node }}${{ matrix.experimental && ' (experimental)' || '' }}

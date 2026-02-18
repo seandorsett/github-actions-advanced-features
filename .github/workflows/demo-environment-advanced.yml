@@ -8,10 +8,15 @@ on:
     paths:
       - 'demos/environment-protection/**'
 
+permissions:
+  contents: read
+
 jobs:
   build:
     name: Build Application
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     
     steps:
       - name: Checkout code
@@ -31,6 +36,7 @@ jobs:
     name: Deploy to Staging
     needs: build
     runs-on: ubuntu-latest
+    permissions: {}
     environment:
       name: staging
       url: https://staging.example.com
@@ -49,6 +55,7 @@ jobs:
     name: Deploy to Production
     needs: deploy-staging
     runs-on: ubuntu-latest
+    permissions: {}
     environment:
       name: production
       url: https://example.com

@@ -9,6 +9,9 @@ on:
       - 'demos/composite-actions/**'
       - '.github/actions/setup-node-simple/**'
 
+permissions:
+  contents: read
+
 jobs:
   use-composite-action:
     name: Use Simple Composite Action
