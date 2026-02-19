@@ -41,20 +41,7 @@ jobs:
         run: npm i -D @playwright/test@${{ matrix.playwright }}
 
       - name: Install browsers + OS deps
-        run: npx playwright install --with-deps ${{ matrix.browser }}
-
-      - name: Create Playwright config with projects
-        run: |
-          cat > playwright.config.ts <<'EOF'
-          import { defineConfig, devices } from '@playwright/test';
-
-          export default defineConfig({
-            projects: [
-              { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-              { name: 'firefox',  use: { ...devices['Desktop Firefox'] } },
-              { name: 'webkit',   use: { ...devices['Desktop Safari'] } },
-            ],
-          });        
+        run: npx playwright install --with-deps ${{ matrix.browser }}   
           
       - name: Run tests (single browser project)
         run: npx playwright test --project=${{ matrix.browser }}
