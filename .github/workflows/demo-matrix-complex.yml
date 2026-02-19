@@ -54,7 +54,7 @@ jobs:
               { name: 'firefox',  use: { ...devices['Desktop Firefox'] } },
               { name: 'webkit',   use: { ...devices['Desktop Safari'] } },
             ],
-          });EOF        
+          });        
           
       - name: Run tests (single browser project)
         run: npx playwright test --project=${{ matrix.browser }}
