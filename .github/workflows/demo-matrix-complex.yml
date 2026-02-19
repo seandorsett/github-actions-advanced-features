@@ -1,4 +1,4 @@
-name: E2E - Browsers + "Browser Versions" (via Playwright version)
+name: Demo 1: Matrix Builds - Complex (via Playwright version)
 
 on:
   workflow_dispatch:
