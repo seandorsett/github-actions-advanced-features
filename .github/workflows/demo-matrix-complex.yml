@@ -28,9 +28,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-
+          
       - name: Install dependencies
-        run: npm ci
+        run: |
+          # Create a minimal package.json if it doesn't exist
+          if [ ! -f "package.json" ]; then
+            echo '{"name":"demo","version":"1.0.0"}' > package.json
+          fi
+          npm install express             
 
       - name: Install Playwright (controls browser revision)
         run: npm i -D @playwright/test@${{ matrix.playwright }}
