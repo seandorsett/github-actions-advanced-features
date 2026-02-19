@@ -41,21 +41,4 @@ jobs:
         run: npm i -D @playwright/test@${{ matrix.playwright }}
 
       - name: Install browsers + OS deps
-        run: npx playwright install --with-deps ${{ matrix.browser }}   
-
-      - name: Debug Playwright config discovery
-        run: |
-          pwd
-          ls -la
-          npx playwright test --list
-          
-      - name: Run tests (single browser project)
-        run: npx playwright test --project=${{ matrix.browser }}
-
-      - name: Upload Playwright report (on failure)
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report-${{ matrix.browser }}-pw${{ matrix.playwright }}
-          path: playwright-report/
-          retention-days: 7
+        run: npx playwright install --with-deps ${{ matrix.browser }} 
