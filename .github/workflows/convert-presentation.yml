@@ -1,0 +1,65 @@
+name: Convert Presentation to PDF
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'presentation/**'
+
+permissions:
+  contents: read
+
+jobs:
+  convert-to-pdf:
+    name: Convert Presentation to PDF
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Puppeteer
+        run: npm install puppeteer
+
+      - name: Convert presentation to PDF
+        run: |
+          node <<'EOF'
+          const puppeteer = require('puppeteer');
+          const path = require('path');
+
+          (async () => {
+            const browser = await puppeteer.launch({
+              args: ['--no-sandbox', '--disable-setuid-sandbox']
+            });
+            const page = await browser.newPage();
+
+            const filePath = path.resolve('presentation/index.html');
+            await page.goto(`file://${filePath}`, { waitUntil: 'load' });
+
+            // Generate PDF using the page's print CSS, which shows all slides
+            // and hides presenter notes (.notes elements)
+            await page.pdf({
+              path: 'presentation/presentation.pdf',
+              format: 'A4',
+              landscape: true,
+              printBackground: true,
+              preferCSSPageSize: true
+            });
+
+            await browser.close();
+            console.log('✅ PDF generated: presentation/presentation.pdf');
+          })();
+          EOF
+
+      - name: Upload PDF artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: presentation-pdf
+          path: presentation/presentation.pdf
