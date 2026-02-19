@@ -1,4 +1,4 @@
-name: Demo 1: Matrix Builds - Complex
+name: "Demo 1: Matrix Builds - Complex"
 
 on:
   workflow_dispatch:
