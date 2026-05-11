@@ -1,0 +1,104 @@
+# Demo: GitHub Actions environments with and without auto-deployment.
+#
+# Drop this into `.github/workflows/environments-demo.yml` in a repo
+# that has a `staging` environment configured (Settings > Environments).
+# The `staging` env should have at least one secret (e.g. API_TOKEN)
+# and one variable (e.g. API_BASE_URL) so you can see env scoping work.
+#
+# Run the workflow twice from the Actions tab — once with `mode: before`,
+# once with `mode: after` — and compare the Deployments tab afterwards.
+
+name: Environments Demo (before vs after)
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Which behavior to demonstrate"
+        required: true
+        default: after
+        type: choice
+        options:
+          - before   # legacy: environment ref always creates a deployment
+          - after    # new:    deployment: false → no deployment record
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # BEFORE: the legacy behavior.
+  #
+  # This job just runs integration tests against the staging API. It does
+  # NOT actually deploy anything — but referencing `environment: staging`
+  # forces Actions to register a deployment in the repo's Deployments tab,
+  # flip the "current deployment" pointer for staging, and fire
+  # `deployment` / `deployment_status` webhooks. Anything subscribed to
+  # those webhooks (Slack bots, dashboards) will think a deploy happened.
+  # ---------------------------------------------------------------------------
+  before-integration-tests:
+    if: inputs.mode == 'before'
+    runs-on: ubuntu-latest
+    environment: staging   # ← legacy short form: implicit deployment = true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show what we have access to
+        run: |
+          echo "API base: $API_BASE_URL"
+          echo "Token length: ${#API_TOKEN}"
+        env:
+          API_BASE_URL: ${{ vars.API_BASE_URL }}
+          API_TOKEN:    ${{ secrets.API_TOKEN }}
+
+      - name: Run integration tests (NOT a real deploy)
+        run: echo "pretend pytest -m integration ran here"
+
+      # 👇 After this job: Deployments tab shows a fake "deploy to staging".
+      #    Misleading. Every test run pollutes deploy history.
+
+  # ---------------------------------------------------------------------------
+  # AFTER: same job, new behavior.
+  #
+  # Same environment scoping for secrets/vars and same protection rules
+  # (required reviewers, wait timer, branch policy all still apply), but
+  # `deployment: false` tells Actions not to create a deployment record.
+  # Deployments tab stays clean. Webhook listeners don't fire.
+  # ---------------------------------------------------------------------------
+  after-integration-tests:
+    if: inputs.mode == 'after'
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      deployment: false   # ← the new bit
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show what we have access to
+        run: |
+          echo "API base: $API_BASE_URL"
+          echo "Token length: ${#API_TOKEN}"
+        env:
+          API_BASE_URL: ${{ vars.API_BASE_URL }}
+          API_TOKEN:    ${{ secrets.API_TOKEN }}
+
+      - name: Run integration tests (NOT a real deploy)
+        run: echo "pretend pytest -m integration ran here"
+
+      # 👇 After this job: no entry in the Deployments tab.
+      #    Secrets and protection rules still worked exactly the same.
+
+  # ---------------------------------------------------------------------------
+  # REAL DEPLOY: what you'd keep as-is.
+  #
+  # When you ARE actually deploying, omit `deployment: false` (or set it
+  # to true) so the deployment record, environment history, and webhooks
+  # all behave normally. The new flag is opt-in per job.
+  # ---------------------------------------------------------------------------
+  real-deploy:
+    if: inputs.mode == 'after'   # gated only so the demo run is quick
+    needs: after-integration-tests
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: https://staging.example.com   # surfaces on the deployment record
+    steps:
+      - name: Deploy for real
+        run: echo "pretend kubectl apply / terraform apply ran here"
