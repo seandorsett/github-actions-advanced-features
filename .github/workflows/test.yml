@@ -1,0 +1,45 @@
+name: Nightly Data Sync
+
+# ─────────────────────────────────────────────────────────────
+# DEMO 2: Environments without deployments (released late March 2026)
+#
+# We want the secrets from the `production-data` environment, but
+# this job isn't a deployment — it's a cron-driven data sync. Before
+# this feature, every run polluted the Deployments tab with a green
+# checkmark. `deployment: false` keeps the secrets, drops the noise.
+# ─────────────────────────────────────────────────────────────
+
+on:
+  schedule:
+    - cron: '0 2 * * *'   # 2am UTC every night
+  workflow_dispatch:       # so we can demo it on stage
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    environment:
+      name: production-data
+      deployment: false   # ⬅ THE NEW BIT — no deployment record created
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify we still get environment secrets
+        env:
+          DB_URL: ${{ secrets.DB_URL }}
+          SYNC_API_KEY: ${{ secrets.SYNC_API_KEY }}
+        run: |
+          # The secrets are masked in logs — but they're present.
+          if [ -z "$DB_URL" ] || [ -z "$SYNC_API_KEY" ]; then
+            echo "::error::Environment secrets not loaded!"
+            exit 1
+          fi
+          echo "✓ Environment secrets are available."
+          echo "✓ No deployment was created for this run."
+
+      - name: Sync data
+        run: |
+          echo "Pretending to sync data from prod..."
+          sleep 2
+          echo "Done."
