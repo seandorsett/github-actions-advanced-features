@@ -20,7 +20,7 @@ jobs:
 
     environment:
       name: production-data
-      deployment: false   # ⬅ THE NEW BIT — no deployment record created
+      deployment: true   # ⬅ THE NEW BIT — no deployment record created
 
     steps:
       - uses: actions/checkout@v4
