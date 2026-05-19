@@ -15,24 +15,27 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #333;
+            min-height: 100vh;
         }
         
         .slides {
+            width: min(100%, 1200px);
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: clamp(72px, 8vw, 96px) clamp(12px, 3vw, 24px) clamp(96px, 14vh, 140px);
         }
         
         .slide {
             background: white;
             border-radius: 10px;
-            padding: 60px;
-            margin: 20px 0;
+            padding: clamp(24px, 5vw, 60px);
+            margin: clamp(12px, 2vw, 20px) 0;
             box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-            min-height: 600px;
+            min-height: min(600px, calc(100svh - 220px));
             display: none;
             flex-direction: column;
             justify-content: center;
+            overflow-wrap: anywhere;
         }
         
         .slide.active {
@@ -41,23 +44,23 @@
         
         .slide h1 {
             color: #2f3542;
-            font-size: 3em;
-            margin-bottom: 20px;
+            font-size: clamp(2rem, 6vw, 3em);
+            margin-bottom: clamp(16px, 3vw, 20px);
             border-bottom: 4px solid #667eea;
-            padding-bottom: 20px;
+            padding-bottom: clamp(14px, 3vw, 20px);
         }
         
         .slide h2 {
             color: #667eea;
-            font-size: 2.5em;
-            margin-bottom: 30px;
+            font-size: clamp(1.75rem, 5vw, 2.5em);
+            margin-bottom: clamp(18px, 4vw, 30px);
         }
         
         .slide h3 {
             color: #764ba2;
-            font-size: 1.8em;
-            margin-top: 30px;
-            margin-bottom: 15px;
+            font-size: clamp(1.25rem, 3.5vw, 1.8em);
+            margin-top: clamp(18px, 4vw, 30px);
+            margin-bottom: clamp(10px, 2vw, 15px);
         }
         
         .slide ul {
@@ -66,11 +69,11 @@
         }
         
         .slide li {
-            font-size: 1.3em;
-            line-height: 2;
-            padding-left: 40px;
+            font-size: clamp(1rem, 2.5vw, 1.3em);
+            line-height: 1.7;
+            padding-left: clamp(28px, 5vw, 40px);
             position: relative;
-            margin-bottom: 15px;
+            margin-bottom: clamp(10px, 2vw, 15px);
         }
         
         .slide li:before {
@@ -93,12 +96,14 @@
         .slide pre {
             background: #2f3542;
             color: #f1f2f6;
-            padding: 20px;
+            padding: clamp(14px, 3vw, 20px);
             border-radius: 8px;
             overflow-x: auto;
-            font-size: 0.9em;
+            font-size: clamp(0.75rem, 2vw, 0.9em);
             line-height: 1.5;
-            margin: 20px 0;
+            margin: clamp(14px, 3vw, 20px) 0;
+            max-width: 100%;
+            -webkit-overflow-scrolling: touch;
         }
         
         .slide pre code {
@@ -130,10 +135,11 @@
             display: inline-block;
             background: #27ae60;
             color: white;
-            padding: 10px 20px;
+            padding: clamp(8px, 2vw, 10px) clamp(14px, 3vw, 20px);
             border-radius: 20px;
             font-weight: bold;
-            margin: 20px 0;
+            margin: clamp(14px, 3vw, 20px) 0;
+            font-size: clamp(0.9rem, 2vw, 1rem);
         }
         
         .title-slide {
@@ -145,19 +151,19 @@
         .title-slide h1 {
             color: white;
             border-bottom: none;
-            font-size: 4em;
+            font-size: clamp(2.4rem, 9vw, 4em);
         }
         
         .title-slide p {
-            font-size: 1.5em;
+            font-size: clamp(1.1rem, 3vw, 1.5em);
             margin-top: 20px;
         }
         
         .two-column {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-top: 20px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: clamp(18px, 4vw, 30px);
+            margin-top: clamp(14px, 3vw, 20px);
         }
         
         .highlight {
@@ -169,9 +175,9 @@
         
         .footer {
             text-align: center;
-            padding: 20px;
+            padding: clamp(14px, 3vw, 20px);
             color: white;
-            font-size: 0.9em;
+            font-size: clamp(0.8rem, 2vw, 0.9em);
         }
         
         .navigation {
@@ -187,10 +193,10 @@
             background: #667eea;
             color: white;
             border: none;
-            padding: 15px 30px;
+            padding: clamp(10px, 2vw, 15px) clamp(16px, 3vw, 30px);
             border-radius: 8px;
             cursor: pointer;
-            font-size: 1.1em;
+            font-size: clamp(0.9rem, 2vw, 1.1em);
             font-weight: bold;
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
             transition: all 0.3s ease;
@@ -215,9 +221,9 @@
             left: 30px;
             background: rgba(102, 126, 234, 0.9);
             color: white;
-            padding: 12px 24px;
+            padding: clamp(8px, 2vw, 12px) clamp(14px, 3vw, 24px);
             border-radius: 8px;
-            font-size: 1em;
+            font-size: clamp(0.85rem, 2vw, 1em);
             font-weight: bold;
             z-index: 1000;
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
@@ -230,10 +236,10 @@
             background: #ffc107;
             color: #333;
             border: none;
-            padding: 12px 24px;
+            padding: clamp(9px, 2vw, 12px) clamp(14px, 3vw, 24px);
             border-radius: 8px;
             cursor: pointer;
-            font-size: 1em;
+            font-size: clamp(0.85rem, 2vw, 1em);
             font-weight: bold;
             box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
             transition: all 0.3s ease;
@@ -245,11 +251,90 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(255, 160, 0, 0.5);
         }
-        
+
+        @media (max-width: 800px) {
+            .slides {
+                padding-top: 72px;
+                padding-bottom: 150px;
+            }
+
+            .slide {
+                justify-content: flex-start;
+                min-height: min(520px, calc(100svh - 210px));
+            }
+
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+
+            .navigation {
+                right: 12px;
+                bottom: 12px;
+                left: 12px;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .nav-button {
+                flex: 1;
+                max-width: 180px;
+            }
+
+            .slide-counter {
+                left: 50%;
+                bottom: 68px;
+                transform: translateX(-50%);
+                white-space: nowrap;
+            }
+
+            .notes-button {
+                top: 12px;
+                right: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .slides {
+                padding-top: 64px;
+                padding-bottom: 138px;
+            }
+
+            .slide {
+                border-radius: 8px;
+                min-height: auto;
+            }
+
+            .slide li {
+                line-height: 1.55;
+            }
+
+            .navigation {
+                gap: 8px;
+            }
+
+            .nav-button {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+
+            .notes-button {
+                left: 12px;
+                width: calc(100% - 24px);
+            }
+        }
+         
         @media print {
+            .slides {
+                max-width: none;
+                padding: 0;
+            }
+
             .slide {
                 page-break-after: always;
                 display: flex !important;
+                min-height: 100vh;
+                margin: 0;
+                box-shadow: none;
             }
             .navigation, .slide-counter, .notes-button {
                 display: none;

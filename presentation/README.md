@@ -27,7 +27,7 @@ The presentation is a self-contained HTML file located at `presentation/index.ht
 - **Speaker Notes window**: Open notes in a separate browser window that syncs with the current slide
 - **Slide counter**: Always know which slide you're on (e.g., "Slide 5 of 20")
 - **Print-friendly**: Can be printed to PDF for handouts
-- **Responsive**: Works on various screen sizes
+- **Responsive**: Fluid slide layout, typography, code blocks, and controls adapt for desktop, tablet, and mobile screens
 
 ### Navigation
 
