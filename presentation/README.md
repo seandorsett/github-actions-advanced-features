@@ -27,7 +27,7 @@ The presentation is a self-contained HTML file located at `presentation/index.ht
 - **Speaker Notes window**: Open notes in a separate browser window that syncs with the current slide
 - **Slide counter**: Always know which slide you're on (e.g., "Slide 5 of 20")
 - **Print-friendly**: Can be printed to PDF for handouts
-- **Responsive**: Works on various screen sizes
+- **Responsive**: Adapts typography, slide spacing, code blocks, and navigation controls for projector, laptop, tablet, and phone screen sizes
 
 ### Navigation
 
@@ -58,6 +58,18 @@ The presentation is a self-contained HTML file located at `presentation/index.ht
 5. **Keep the Actions tab open** in another browser tab for demos
 6. **Follow the timing** in speaker notes (10 min per topic)
 7. **Be ready to run workflows** manually if needed
+8. **Use responsive layouts when needed**: On tablets and phones, content stacks vertically and controls move below the slide content to keep demos readable
+
+### Responsive Behavior
+
+The slide deck is optimized for:
+
+- **Desktop/projector displays**: Large typography and centered slide content
+- **Laptop displays or shorter screens**: Reduced spacing so slides remain readable without controls covering content
+- **Tablet widths**: Two-column layouts stack into a single column
+- **Phone widths**: Compact navigation controls, smaller slide padding, and scrollable code examples
+
+Long code blocks scroll horizontally when needed, while inline code wraps to avoid overflowing the slide.
 
 ### Customization
 
